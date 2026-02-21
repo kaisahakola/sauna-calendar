@@ -1,0 +1,24 @@
+from pydantic import BaseModel, field_validator
+from datetime import datetime
+
+class BookingBase(BaseModel):
+  start_time: datetime
+  end_time: datetime
+  status: str
+  building_id: int
+  sauna_id: int
+  user_id: int
+
+  @field_validator("end_time")
+  def end_after_start(cls, v, info):
+    if "start_time" in info.data and v <= info.data["start_time"]:
+      raise ValueError("end_time must be after start_time")
+    return v
+
+class BookingCreate(BookingBase):
+  pass
+
+class Booking(BookingBase):
+  id: int
+  class Config:
+    from_attributes = True

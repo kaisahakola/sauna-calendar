@@ -1,3 +1,4 @@
-from sqlalchemy.orm import declarative_base
-
-Base = declarative_base()
+from .user import User
+from .building import Building
+from .sauna import Sauna
+from .booking import Booking
