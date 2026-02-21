@@ -2,6 +2,8 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.booking import BookingCreate, Booking as BookingSchema
 from models.booking import Booking
+from models.building import Building
+from models.sauna import Sauna
 from sqlalchemy.orm import Session
 from database import SessionLocal
 
@@ -29,6 +31,17 @@ def get_booking_by_id(booking_id: int, db: Session = Depends(get_db)):
 
 @router.post("/bookings/", response_model=BookingSchema)
 def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
+  building = db.get(Building, booking.building_id)
+  if not building:
+    raise HTTPException(status_code=400, detail="Building not found")
+
+  sauna = db.get(Sauna, booking.sauna_id)
+  if not sauna:
+    raise HTTPException(status_code=400, detail="Sauna not found")
+  
+  if sauna.building_id != booking.building_id:
+    raise HTTPException(status_code=400, detail="Sauna does not exist in the selected building")
+  
   overlapping_sauna_booking = db.query(Booking).filter(
     Booking.sauna_id == booking.sauna_id,
     Booking.start_time < booking.end_time,
