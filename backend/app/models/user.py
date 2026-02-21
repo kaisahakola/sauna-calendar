@@ -11,4 +11,4 @@ class User(Base):
   building_id = Column(Integer, ForeignKey("buildings.id", ondelete="SET NULL"), nullable=True)
 
   building = relationship("Building", back_populates="user")
-  booking = relationship("Booking", back_populates="user")
+  booking = relationship("Booking", back_populates="user", cascade="all, delete-orphan")
