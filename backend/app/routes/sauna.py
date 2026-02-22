@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.sauna import SaunaCreate, Sauna as SaunaSchema
 from models.sauna import Sauna
+from models.building import Building
 from sqlalchemy.orm import Session
 from database import SessionLocal
 
@@ -33,6 +34,10 @@ def create_sauna(sauna: SaunaCreate, db: Session = Depends(get_db)):
   if existing_sauna:
     raise HTTPException(status_code=400, detail="Sauna with this name already exists in the same building")
   
+  building = db.get(Building, sauna.building_id)
+  if not building:
+    raise HTTPException(status_code=400, detail="Building not found")
+  
   db_sauna = Sauna(**sauna.model_dump())
   db.add(db_sauna)
   db.commit()
@@ -44,6 +49,10 @@ def update_sauna(sauna_id: int, sauna: SaunaCreate, db: Session = Depends(get_db
   db_sauna = db.get(Sauna, sauna_id)
   if not db_sauna:
     return HTTPException(status_code=400, detail="Sauna not found")
+  
+  building = db.get(Building, sauna.building_id)
+  if not building:
+    raise HTTPException(status_code=400, detail="Building not found")
   
   db_sauna.name = sauna.name
   db_sauna.building_id = sauna.building_id

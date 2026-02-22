@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class SaunaBase(BaseModel):
-  name: str
+  name: str = Field(min_length=2, max_length=100)
   building_id: int
 
 class SaunaCreate(SaunaBase):

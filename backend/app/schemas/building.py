@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class BuildingBase(BaseModel):
-  name: str
-  address: str
+  name: str = Field(min_length=2, max_length=100)
+  address: str = Field(min_length=2, max_length=100)
 
 class BuildingCreate(BuildingBase):
   pass
