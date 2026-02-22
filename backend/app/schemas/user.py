@@ -1,15 +1,10 @@
-from typing import Optional
 from pydantic import BaseModel
-from enum import Enum
-
-class Role(Enum):
-  ADMIN = "ADMIN"
-  USER = "USER"
+from typing import Literal, Optional
 
 class UserBase(BaseModel):
   name: str
   email: str
-  role: Role
+  role: Literal["user", "admin"]
   building_id: Optional[int] = None
 
 class UserCreate(UserBase):

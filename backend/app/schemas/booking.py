@@ -1,15 +1,11 @@
+from typing import Literal
 from pydantic import BaseModel, field_validator
 from datetime import datetime
-from enum import Enum
-
-class Status(Enum):
-  ACTIVE = "ACTIVE"
-  NONACTIVE = "NONACTIVE"
 
 class BookingBase(BaseModel):
   start_time: datetime
   end_time: datetime
-  status: Status
+  status: Literal["pending", "confirmed", "cancelled"]
   building_id: int
   sauna_id: int
   user_id: int
