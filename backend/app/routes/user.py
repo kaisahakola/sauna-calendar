@@ -14,7 +14,7 @@ def get_db():
   finally:
     db.close()
 
-@router.get("/users/", response_model=List[UserSchema])
+@router.get("/users", response_model=List[UserSchema])
 def get_all_users(db: Session = Depends(get_db)):
   db_users = db.query(User).all()
   return db_users
@@ -27,7 +27,7 @@ def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
 
   return db_user
 
-@router.post("/users/", response_model=UserSchema)
+@router.post("/users", response_model=UserSchema)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
   existing_user = db.query(User).filter(User.email == user.email).first()
   if existing_user:

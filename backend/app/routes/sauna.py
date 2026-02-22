@@ -14,7 +14,7 @@ def get_db():
   finally:
     db.close()
 
-@router.get("/saunas/", response_model=List[SaunaSchema])
+@router.get("/saunas", response_model=List[SaunaSchema])
 def get_all_saunas(db: Session = Depends(get_db)):
   db_saunas = db.query(Sauna).all()
   return db_saunas
@@ -27,7 +27,7 @@ def get_sauna_with_id(sauna_id: int, db: Session = Depends(get_db)):
 
   return db_sauna
 
-@router.post("/saunas/", response_model=SaunaSchema)
+@router.post("/saunas", response_model=SaunaSchema)
 def create_sauna(sauna: SaunaCreate, db: Session = Depends(get_db)):
   existing_sauna = db.query(Sauna).filter(Sauna.name == sauna.name and Sauna.building_id == sauna.building_id).first()
   if existing_sauna:

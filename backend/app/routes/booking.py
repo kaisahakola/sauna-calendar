@@ -16,7 +16,7 @@ def get_db():
   finally:
     db.close()
 
-@router.get("/bookings/", response_model=List[BookingSchema])
+@router.get("/bookings", response_model=List[BookingSchema])
 def get_all_bookings(db: Session = Depends(get_db)):
   db_bookings = db.query(Booking).all()
   return db_bookings
@@ -29,7 +29,7 @@ def get_booking_by_id(booking_id: int, db: Session = Depends(get_db)):
 
   return db_booking
 
-@router.post("/bookings/", response_model=BookingSchema)
+@router.post("/bookings", response_model=BookingSchema)
 def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
   building = db.get(Building, booking.building_id)
   if not building:

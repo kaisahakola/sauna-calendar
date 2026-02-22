@@ -14,7 +14,7 @@ def get_db():
   finally:
     db.close()
 
-@router.get("/buildings/", response_model=List[BuildingSchema])
+@router.get("/buildings", response_model=List[BuildingSchema])
 def get_all_buildings(db: Session = Depends(get_db)):
   db_buildings = db.query(Building).all()
   return db_buildings
@@ -27,7 +27,7 @@ def getBuilding_with_id(building_id: int, db: Session = Depends(get_db)):
   
   return db_building
 
-@router.post("/buildings/", response_model=BuildingSchema)
+@router.post("/buildings", response_model=BuildingSchema)
 def create_building(building: BuildingCreate, db: Session = Depends(get_db)):
   db_building = Building(**building.model_dump())
   db.add(db_building)
