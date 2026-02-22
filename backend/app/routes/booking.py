@@ -72,6 +72,31 @@ def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depend
   if not db_booking:
     raise HTTPException(status_code=400, detail="Booking not found")
   
+  sauna = db.get(Sauna, booking.sauna_id)
+  if not sauna:
+    raise HTTPException(status_code=400, detail="Sauna not found")
+  
+  if sauna.building_id != booking.building_id:
+    raise HTTPException(status_code=400, detail="Sauna does not exist in the selected building")
+  
+  overlapping_sauna_booking = db.query(Booking).filter(
+    Booking.sauna_id == booking.sauna_id,
+    Booking.start_time < booking.end_time,
+    Booking.end_time > booking.start_time
+  ).first()
+
+  if overlapping_sauna_booking:
+    raise HTTPException(status_code=400, detail="Sauna already booked for this time")
+  
+  overlapping_user_booking = db.query(Booking).filter(
+    Booking.user_id == booking.user_id,
+    Booking.start_time < booking.end_time,
+    Booking.end_time > booking.start_time
+  ).first()
+
+  if overlapping_user_booking:
+    raise HTTPException(status_code=400, detail="User already booked sauna for this time")
+  
   db_booking.start_time = booking.start_time
   db_booking.end_time = booking.end_time
   db_booking.status = booking.status
