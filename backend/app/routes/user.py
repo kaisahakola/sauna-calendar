@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.user import UserCreate, User as UserSchema
+from schemas.user import UserCreate, UserRead as UserSchema
 from models.user import User
 from sqlalchemy.orm import Session
 from database import SessionLocal

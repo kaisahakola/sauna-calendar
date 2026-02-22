@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.sauna import SaunaCreate, Sauna as SaunaSchema
+from schemas.sauna import SaunaCreate, SaunaRead as SaunaSchema
 from models.sauna import Sauna
 from models.building import Building
 from sqlalchemy.orm import Session

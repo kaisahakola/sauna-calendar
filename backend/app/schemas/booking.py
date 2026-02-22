@@ -2,7 +2,20 @@ from typing import Literal
 from pydantic import BaseModel, field_validator
 from datetime import datetime
 
-class BookingBase(BaseModel):
+class BuildingRead(BaseModel):
+  id: int
+  name: str
+  address: str
+
+class SaunaRead(BaseModel):
+  id: int
+  name: str
+
+class UserRead(BaseModel):
+  id: int
+  name: str
+
+class BookingCreate(BaseModel):
   start_time: datetime
   end_time: datetime
   status: Literal["pending", "confirmed", "cancelled"]
@@ -16,10 +29,10 @@ class BookingBase(BaseModel):
       raise ValueError("end_time must be after start_time")
     return v
 
-class BookingCreate(BookingBase):
-  pass
-
-class Booking(BookingBase):
+class BookingRead(BaseModel):
   id: int
+  building: BuildingRead
+  sauna: SaunaRead
+  user: UserRead
   class Config:
     from_attributes = True

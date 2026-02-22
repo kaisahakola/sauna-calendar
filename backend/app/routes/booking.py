@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.booking import BookingCreate, Booking as BookingSchema
+from schemas.booking import BookingCreate, BookingRead as BookingSchema
 from models.booking import Booking
 from models.building import Building
 from models.sauna import Sauna
