@@ -1,5 +1,5 @@
 from typing import Literal, Optional
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
 class BuildingRead(BaseModel):
   id: int
@@ -15,5 +15,4 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
   id: int
   building: Optional[BuildingRead] = None
-  class Config:
-    from_attributes = True
+  model_config = ConfigDict(from_attributes=True)

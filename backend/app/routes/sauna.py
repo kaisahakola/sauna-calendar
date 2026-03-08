@@ -1,10 +1,10 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.sauna import SaunaCreate, SaunaRead as SaunaSchema
-from models.sauna import Sauna
-from models.building import Building
+from app.schemas.sauna import SaunaCreate, SaunaRead as SaunaSchema
+from app.models.sauna import Sauna
+from app.models.building import Building
 from sqlalchemy.orm import Session
-from database import SessionLocal
+from app.database import SessionLocal
 
 router = APIRouter()
 

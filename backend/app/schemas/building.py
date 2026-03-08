@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 import re
 
 class BuildingBase(BaseModel):
@@ -17,5 +17,4 @@ class BuildingCreate(BuildingBase):
 
 class Building(BuildingBase):
   id: int
-  class Config:
-    from_attributes = True
+  model_config = ConfigDict(from_attributes=True)

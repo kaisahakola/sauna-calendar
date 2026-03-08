@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ConfigDict
 from datetime import datetime
 
 class BuildingRead(BaseModel):
@@ -34,5 +34,4 @@ class BookingRead(BaseModel):
   building: BuildingRead
   sauna: SaunaRead
   user: UserRead
-  class Config:
-    from_attributes = True
+  model_config = ConfigDict(from_attributes=True)

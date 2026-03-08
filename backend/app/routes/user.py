@@ -1,9 +1,9 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.user import UserCreate, UserRead as UserSchema
-from models.user import User
+from app.schemas.user import UserCreate, UserRead as UserSchema
+from app.models.user import User
 from sqlalchemy.orm import Session
-from database import SessionLocal
+from app.database import SessionLocal
 
 router = APIRouter()
 

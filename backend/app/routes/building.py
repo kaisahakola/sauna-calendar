@@ -1,8 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from database import SessionLocal
-from schemas.building import BuildingCreate, Building as BuildingSchema
-from models.building import Building
+from app.database import SessionLocal
+from app.schemas.building import BuildingCreate, Building as BuildingSchema
+from app.models.building import Building
 from sqlalchemy.orm import Session
 
 router = APIRouter()

@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from database import engine
-from models.base import Base
-import models
-from routes import user, building, sauna, booking
+from app.database import engine
+from app.models.base import Base
+import app.models
+from app.routes import user, building, sauna, booking
 
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
