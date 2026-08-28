@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.database import SessionLocal
 from app.schemas.building import BuildingCreate, Building as BuildingSchema
 from app.models.building import Building
@@ -23,7 +23,7 @@ def get_all_buildings(db: Session = Depends(get_db)):
 def getBuilding_with_id(building_id: int, db: Session = Depends(get_db)):
   db_building = db.get(Building, building_id)
   if not db_building:
-    return HTTPException(status_code=400, detail="Bulding not found")
+    raise HTTPException(status_code=404, detail="Bulding not found")
   
   return db_building
 
@@ -48,11 +48,11 @@ def update_building(building_id: int, building: BuildingCreate, db: Session = De
   db.refresh(db_building)
   return db_building
 
-@router.delete("/buildings/{building_id}")
+@router.delete("/buildings/{building_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_building(building_id: int, db: Session = Depends(get_db)):
   db_building = db.get(Building, building_id)
   if not db_building:
-    raise HTTPException(status_code=400, detail="Building not found")
+    raise HTTPException(status_code=404, detail="Building not found")
   
   db.delete(db_building)
   db.commit()
