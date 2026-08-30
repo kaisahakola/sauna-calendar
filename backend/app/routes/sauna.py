@@ -4,16 +4,9 @@ from app.schemas.sauna import SaunaCreate, SaunaRead as SaunaSchema
 from app.models.sauna import Sauna
 from app.models.building import Building
 from sqlalchemy.orm import Session
-from app.database import SessionLocal
+from app.database import get_db
 
 router = APIRouter()
-
-def get_db():
-  db = SessionLocal()
-  try:
-    yield db
-  finally:
-    db.close()
 
 @router.get("/saunas", response_model=List[SaunaSchema])
 def get_all_saunas(db: Session = Depends(get_db)):

@@ -5,16 +5,9 @@ from app.models.booking import Booking
 from app.models.building import Building
 from app.models.sauna import Sauna
 from sqlalchemy.orm import Session
-from app.database import SessionLocal
+from app.database import get_db
 
 router = APIRouter()
-
-def get_db():
-  db = SessionLocal()
-  try:
-    yield db
-  finally:
-    db.close()
 
 @router.get("/bookings", response_model=List[BookingSchema])
 def get_all_bookings(db: Session = Depends(get_db)):

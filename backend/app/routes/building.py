@@ -1,18 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.database import SessionLocal
+from app.database import get_db
 from app.schemas.building import BuildingCreate, Building as BuildingSchema
 from app.models.building import Building
 from sqlalchemy.orm import Session
 
 router = APIRouter()
-
-def get_db():
-  db = SessionLocal()
-  try:
-    yield db
-  finally:
-    db.close()
 
 @router.get("/buildings", response_model=List[BuildingSchema])
 def get_all_buildings(db: Session = Depends(get_db)):
