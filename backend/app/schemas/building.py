@@ -1,9 +1,10 @@
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 import re
 
-class BuildingBase(BaseModel):
+class BuildingCreate(BaseModel):
   name: str = Field(min_length=2, max_length=100)
   address: str = Field(min_length=2, max_length=100)
+  duration_minutes: int = 60
 
   @field_validator("address")
   def address_must_have_number(cls, value):
@@ -12,9 +13,9 @@ class BuildingBase(BaseModel):
     
     return value
 
-class BuildingCreate(BuildingBase):
-  pass
-
-class Building(BuildingBase):
+class BuildingRead(BuildingCreate):
   id: int
+  name: str = Field(min_length=2, max_length=100)
+  address: str = Field(min_length=2, max_length=100)
+  duration_minutes: int = 60
   model_config = ConfigDict(from_attributes=True)

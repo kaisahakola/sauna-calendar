@@ -1,7 +1,7 @@
 from app.models.building import Building
 
 def test_get_buildings(db, client):
-  db_building = Building(address="Siurontie 18", name="Siuron Kartano")
+  db_building = Building(address="Siurontie 18", name="Siuron Kartano", duration_minutes=60)
   db.add(db_building)
   db.commit()
 
@@ -9,26 +9,30 @@ def test_get_buildings(db, client):
   assert response.status_code == 200
   assert response.json()[0]["name"] == "Siuron Kartano"
   assert response.json()[0]["address"] == "Siurontie 18"
+  assert response.json()[0]["duration_minutes"] == 60
 
 def test_create_building(db,client):
   response = client.post(
     "/buildings",
     json={
       "name": "Siuron Kartano",
-      "address": "Siurontie 25"
+      "address": "Siurontie 25",
+      "duration_minutes": 60
     }
   )
 
   assert response.status_code == 200
   assert response.json()["name"] == "Siuron Kartano"
   assert response.json()["address"] == "Siurontie 25"
+  assert response.json()["duration_minutes"] == 60
 
 def test_get_building_by_id(db, client):
   new_building = client.post(
     "/buildings",
     json={
       "name": "Kaukajärven Kartano",
-      "address": "Kaukajärventie 25"
+      "address": "Kaukajärventie 25",
+      "duration_minutes": 60
     }
   )
 
@@ -39,13 +43,15 @@ def test_get_building_by_id(db, client):
   assert response.json()["id"] == building_id
   assert response.json()["name"] == "Kaukajärven Kartano"
   assert response.json()["address"] == "Kaukajärventie 25"
+  assert response.json()["duration_minutes"] == 60
 
 def test_delete_building(db, client):
   new_building = client.post(
     "/buildings",
     json={
       "name": "Espoon Kartano",
-      "address": "Espoontie 25"
+      "address": "Espoontie 25",
+      "duration_minutes": 60
     }
   )
 

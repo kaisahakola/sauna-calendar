@@ -7,6 +7,7 @@ class Building(Base):
   id = Column(Integer, primary_key=True)
   address = Column(String)
   name = Column(String)
+  duration_minutes = Column(Integer, default=60, nullable=False)
 
   user = relationship("User", back_populates="building", order_by="User.id")
   sauna = relationship("Sauna", back_populates="building", cascade="all, delete")

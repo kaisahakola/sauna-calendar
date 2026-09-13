@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.database import get_db
-from app.schemas.building import BuildingCreate, Building as BuildingSchema
+from app.schemas.building import BuildingCreate, BuildingRead as BuildingSchema
 from app.models.building import Building
 from sqlalchemy.orm import Session
 
