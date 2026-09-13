@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.sauna import SaunaCreate, SaunaRead as SaunaSchema
 from app.models.sauna import Sauna
 from app.models.building import Building
@@ -17,7 +17,7 @@ def get_all_saunas(db: Session = Depends(get_db)):
 def get_sauna_with_id(sauna_id: int, db: Session = Depends(get_db)):
   db_sauna = db.get(Sauna, sauna_id)
   if not db_sauna:
-    return HTTPException(status_code=400, detail="Sauna not found")
+    raise HTTPException(status_code=404, detail="Sauna not found")
 
   return db_sauna
 
@@ -25,11 +25,11 @@ def get_sauna_with_id(sauna_id: int, db: Session = Depends(get_db)):
 def create_sauna(sauna: SaunaCreate, db: Session = Depends(get_db)):
   existing_sauna = db.query(Sauna).filter(Sauna.name == sauna.name and Sauna.building_id == sauna.building_id).first()
   if existing_sauna:
-    raise HTTPException(status_code=400, detail="Sauna with this name already exists in the same building")
+    raise HTTPException(status_code=404, detail="Sauna with this name already exists in the same building")
   
   building = db.get(Building, sauna.building_id)
   if not building:
-    raise HTTPException(status_code=400, detail="Building not found")
+    raise HTTPException(status_code=404, detail="Building not found")
   
   db_sauna = Sauna(**sauna.model_dump())
   db.add(db_sauna)
@@ -54,11 +54,11 @@ def update_sauna(sauna_id: int, sauna: SaunaCreate, db: Session = Depends(get_db
   db.refresh(db_sauna)
   return db_sauna
 
-@router.delete("/saunas/{sauna_id}")
+@router.delete("/saunas/{sauna_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_sauna(sauna_id: int, db: Session = Depends(get_db)):
   db_sauna = db.get(Sauna, sauna_id)
   if not db_sauna:
-    return HTTPException(status_code=400, detail="Sauna not found")
+    raise HTTPException(status_code=404, detail="Sauna not found")
   
   db.delete(db_sauna)
   db.commit()
