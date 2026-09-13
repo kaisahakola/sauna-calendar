@@ -1,7 +1,8 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.user import UserCreate, UserRead as UserSchema
 from app.models.user import User
+from app.models.building import Building
 from sqlalchemy.orm import Session
 from app.database import get_db
 
@@ -16,7 +17,7 @@ def get_all_users(db: Session = Depends(get_db)):
 def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
   db_user = db.get(User, user_id)
   if not db_user:
-    raise HTTPException(status_code=400, detail="User not found")
+    raise HTTPException(status_code=404, detail="User not found")
 
   return db_user
 
@@ -24,7 +25,11 @@ def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
   existing_user = db.query(User).filter(User.email == user.email).first()
   if existing_user:
-    raise HTTPException(status_code=400, detail="Email already registered")
+    raise HTTPException(status_code=404, detail="Email already registered")
+
+  building = db.get(Building, user.building_id)
+  if not building:
+    raise HTTPException(status_code=404, detail="Building not found")
   
   db_user = User(**user.model_dump())
   db.add(db_user)
@@ -36,7 +41,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
   db_user = db.get(User, user_id)
   if not db_user:
-    raise HTTPException(status_code=400, detail="User not found")
+    raise HTTPException(status_code=404, detail="User not found")
   
   db_user.name = user.name
   db_user.email = user.email
@@ -47,11 +52,11 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
   db.refresh(db_user)
   return db_user
 
-@router.delete("/users/{user_id}")
+@router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(user_id: int, db: Session = Depends(get_db)):
   db_user = db.get(User, user_id)
   if not db_user:
-    raise HTTPException(status_code=400, detail="User not found")
+    raise HTTPException(status_code=404, detail="User not found")
   
   db.delete(db_user)
   db.commit()

@@ -14,5 +14,8 @@ class UserCreate(BaseModel):
 
 class UserRead(BaseModel):
   id: int
+  name: str = Field(min_length=2, max_length=100)
+  email: EmailStr
+  role: Literal["user", "admin"]
   building: Optional[BuildingRead] = None
   model_config = ConfigDict(from_attributes=True)
