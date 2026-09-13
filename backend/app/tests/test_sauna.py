@@ -4,7 +4,7 @@ from app.models.building import Building
 
 @pytest.fixture
 def building(db):
-  building = Building(name="Viialan Kartano", address="Viialantie 666")
+  building = Building(name="Viialan Kartano", address="Viialantie 666", duration_minutes=60)
   db.add(building)
   db.commit()
   db.refresh(building)
