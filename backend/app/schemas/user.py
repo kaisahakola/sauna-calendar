@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Column, Optional
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
 class BuildingRead(BaseModel):
@@ -9,13 +9,12 @@ class BuildingRead(BaseModel):
 class UserCreate(BaseModel):
   name: str = Field(min_length=2, max_length=100)
   email: EmailStr
-  role: Literal["user", "admin"]
   building_id: Optional[int] = None
 
 class UserRead(BaseModel):
   id: int
-  name: str = Field(min_length=2, max_length=100)
+  name: str
   email: EmailStr
-  role: Literal["user", "admin"]
+  role: str
   building: Optional[BuildingRead] = None
   model_config = ConfigDict(from_attributes=True)

@@ -15,7 +15,7 @@ class BuildingCreate(BaseModel):
 
 class BuildingRead(BuildingCreate):
   id: int
-  name: str = Field(min_length=2, max_length=100)
-  address: str = Field(min_length=2, max_length=100)
-  duration_minutes: int = 60
+  name: str
+  address: str
+  duration_minutes: int
   model_config = ConfigDict(from_attributes=True)

@@ -12,6 +12,6 @@ class SaunaCreate(BaseModel):
 
 class SaunaRead(BaseModel):
   id: int
-  name: str = Field(max_length=20)
+  name: str
   building: BuildingRead
   model_config = ConfigDict(from_attributes=True)
