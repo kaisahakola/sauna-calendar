@@ -18,7 +18,6 @@ class UserRead(BaseModel):
 
 class BookingCreate(BaseModel):
   start_time: datetime
-  status: Literal["pending", "confirmed", "cancelled"]
   building_id: int
   sauna_id: int
   user_id: int

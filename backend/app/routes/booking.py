@@ -59,7 +59,7 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
   db_booking = Booking(
     start_time = booking.start_time,
     end_time = end_time,
-    status = booking.status,
+    status = "confirmed",
     building_id = booking.building_id,
     sauna_id = booking.sauna_id,
     user_id = booking.user_id
@@ -110,7 +110,7 @@ def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depend
   
   db_booking.start_time = booking.start_time
   db_booking.end_time = end_time
-  db_booking.status = booking.status
+  db_booking.status = "confirmed"
   db_booking.building_id = booking.building_id
   db_booking.sauna_id = booking.sauna_id
   db_booking.user_id = booking.user_id
