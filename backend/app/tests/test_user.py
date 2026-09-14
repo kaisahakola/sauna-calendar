@@ -12,7 +12,7 @@ def building(db):
   return building
 
 def test_get_users(db, client, building):
-  user = User(name="Maija Mehiläinen", email="maija.mehilainen@email.com", role="user", building_id=building.id)
+  user = User(name="Maija Mehiläinen", email="maija.mehilainen@email.com", building_id=building.id)
   db.add(user)
   db.commit()
 
@@ -20,14 +20,12 @@ def test_get_users(db, client, building):
   assert response.status_code == 200
   assert response.json()[0]["name"] == "Maija Mehiläinen"
   assert response.json()[0]["email"] == "maija.mehilainen@email.com"
-  assert response.json()[0]["role"] == "user"
 
 def test_create_user(db, client, building):
   response = client.post(
     "/users",
     json={
       "name": "Keijo Kekäläinen",
-      "role": "user",
       "email": "keijokek85@hotmail.com",
       "building_id": building.id
     }
@@ -36,7 +34,6 @@ def test_create_user(db, client, building):
   assert response.status_code == 200
   assert response.json()["name"] == "Keijo Kekäläinen"
   assert response.json()["email"] == "keijokek85@hotmail.com"
-  assert response.json()["role"] == "user"
   assert response.json()["building"]["id"] == building.id
 
 def test_get_user_by_id(db, client, building):
@@ -44,7 +41,6 @@ def test_get_user_by_id(db, client, building):
     "/users",
     json={
       "name": "Kaija Koo",
-      "role": "user",
       "email": "kaijakoo@email.com",
       "building_id": building.id
     }
@@ -56,7 +52,6 @@ def test_get_user_by_id(db, client, building):
   assert response.status_code == 200
   assert response.json()["name"] == "Kaija Koo"
   assert response.json()["email"] == "kaijakoo@email.com"
-  assert response.json()["role"] == "user"
   assert response.json()["building"]["id"] == building.id
 
 def test_delete_user_by_id(db, client, building):
@@ -64,7 +59,6 @@ def test_delete_user_by_id(db, client, building):
     "/users",
     json={
       "name": "Ella Mozzarella",
-      "role": "user",
       "email": "ella01@email.com",
       "building_id": building.id
     }
@@ -91,7 +85,6 @@ def test_create_user_building_not_found(db, client):
     "/users",
     json={
       "name": "Kaisa Kak",
-      "role": "user",
       "email": "kakkak@email.com",
       "building_id": 8888888888
     }
@@ -104,7 +97,6 @@ def test_duplicate_user_email(db, client, building):
     "/users",
     json={
       "name": "Jaana Jokunen",
-      "role": "user",
       "email": "jaana111@email.com",
       "building_id": building.id
     }
@@ -114,7 +106,6 @@ def test_duplicate_user_email(db, client, building):
     "/users",
     json={
       "name": "Jaana Jokunen",
-      "role": "user",
       "email": "jaana111@email.com",
       "building_id": user1.json()["building"]["id"]
     }

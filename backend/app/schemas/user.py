@@ -1,4 +1,4 @@
-from typing import Column, Optional
+from typing import Optional
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
 class BuildingRead(BaseModel):

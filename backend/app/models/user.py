@@ -7,7 +7,7 @@ class User(Base):
   id = Column(Integer, primary_key=True)
   name = Column(String)
   email = Column(String)
-  role = Column(String)
+  role = Column(String, default="user", nullable=False)
   building_id = Column(Integer, ForeignKey("buildings.id", ondelete="SET NULL"), nullable=True)
 
   building = relationship("Building", back_populates="user")

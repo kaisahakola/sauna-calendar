@@ -45,7 +45,7 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
   
   db_user.name = user.name
   db_user.email = user.email
-  db_user.role = user.role
+  db_user.role = "user"
   db_user.building_id = user.building_id
 
   db.commit()
