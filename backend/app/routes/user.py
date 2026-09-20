@@ -42,6 +42,10 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
   db_user = db.get(User, user_id)
   if not db_user:
     raise HTTPException(status_code=404, detail="User not found")
+
+  building = db.get(Building, user.building_id)
+  if not building:
+    raise HTTPException(status_code=404, detail="Building not found")
   
   db_user.name = user.name
   db_user.email = user.email
