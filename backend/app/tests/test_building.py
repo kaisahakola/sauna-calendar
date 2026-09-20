@@ -1,5 +1,9 @@
 from app.models.building import Building
 
+#
+# GET
+#
+
 def test_get_buildings(db, client):
   db_building = Building(address="Siurontie 18", name="Siuron Kartano", duration_minutes=60)
   db.add(db_building)
@@ -10,21 +14,6 @@ def test_get_buildings(db, client):
   assert response.json()[0]["name"] == "Siuron Kartano"
   assert response.json()[0]["address"] == "Siurontie 18"
   assert response.json()[0]["duration_minutes"] == 60
-
-def test_create_building(db,client):
-  response = client.post(
-    "/buildings",
-    json={
-      "name": "Siuron Kartano",
-      "address": "Siurontie 25",
-      "duration_minutes": 60
-    }
-  )
-
-  assert response.status_code == 200
-  assert response.json()["name"] == "Siuron Kartano"
-  assert response.json()["address"] == "Siurontie 25"
-  assert response.json()["duration_minutes"] == 60
 
 def test_get_building_by_id(db, client):
   new_building = client.post(
@@ -45,6 +34,74 @@ def test_get_building_by_id(db, client):
   assert response.json()["address"] == "Kaukajärventie 25"
   assert response.json()["duration_minutes"] == 60
 
+def test_get_building_not_found(db, client):
+  response = client.get("buildings/23424234")
+
+  assert response.status_code == 404
+
+#
+# POST
+#
+
+def test_create_building(db, client):
+  response = client.post(
+    "/buildings",
+    json={
+      "name": "Siuron Kartano",
+      "address": "Siurontie 25",
+      "duration_minutes": 60
+    }
+  )
+
+  assert response.status_code == 200
+  assert response.json()["name"] == "Siuron Kartano"
+  assert response.json()["address"] == "Siurontie 25"
+  assert response.json()["duration_minutes"] == 60
+
+#
+# PUT
+#
+
+def test_update_building(db, client):
+  building = client.post(
+    "/buildings",
+    json={
+      "name": "Siuron Kartano",
+      "address": "Siurontie 25",
+      "duration_minutes": 60
+    }
+  )
+
+  building_id = building.json()["id"]
+
+  updated_building = client.put(
+    f"/buildings/{building_id}",
+    json={
+      "name": "Siuron Kartano",
+      "address": "Siurontie 27",
+      "duration_minutes": 60
+    }
+  )
+
+  assert updated_building.status_code == 200
+  assert updated_building.json()["address"] == "Siurontie 27"
+
+def test_update_building_not_found(db, client):
+  response = client.put(
+    "/buildings/8783648243",
+    json={
+      "name": "Siuron Kartano",
+      "address": "Siurontie 27",
+      "duration_minutes": 60
+    }
+  )
+
+  assert response.status_code == 400
+
+#
+# DELETE
+#
+
 def test_delete_building(db, client):
   new_building = client.post(
     "/buildings",
@@ -62,11 +119,6 @@ def test_delete_building(db, client):
 
   response_get = client.get(f"/buildings/{building_id}")
   assert response_get.status_code == 404
-
-def test_get_building_not_found(db, client):
-  response = client.get("buildings/23424234")
-
-  assert response.status_code == 404
 
 def test_delete_building_not_found(db, client):
   response = client.delete("buildings/76765473")
