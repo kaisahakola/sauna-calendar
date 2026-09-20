@@ -41,7 +41,7 @@ def create_sauna(sauna: SaunaCreate, db: Session = Depends(get_db)):
 def update_sauna(sauna_id: int, sauna: SaunaCreate, db: Session = Depends(get_db)):
   db_sauna = db.get(Sauna, sauna_id)
   if not db_sauna:
-    return HTTPException(status_code=400, detail="Sauna not found")
+    raise HTTPException(status_code=400, detail="Sauna not found")
   
   building = db.get(Building, sauna.building_id)
   if not building:
