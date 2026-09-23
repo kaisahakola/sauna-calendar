@@ -10,6 +10,11 @@ class UserCreate(BaseModel):
   name: str = Field(min_length=2, max_length=100)
   email: EmailStr
   building_id: Optional[int] = None
+  password: str = Field(min_length=8)
+
+class UserLogin(BaseModel):
+  email: EmailStr
+  password: str
 
 class UserRead(BaseModel):
   id: int
