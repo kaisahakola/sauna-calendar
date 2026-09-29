@@ -16,6 +16,10 @@ class UserLogin(BaseModel):
   email: EmailStr
   password: str
 
+class UserToken(BaseModel):
+  access_token: str
+  token_type: str
+
 class UserRead(BaseModel):
   id: int
   name: str

@@ -1,11 +1,12 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.schemas.user import UserCreate, UserLogin, UserRead as UserSchema
+from app.schemas.user import UserCreate, UserLogin, UserToken, UserRead as UserSchema
 from app.models.user import User
 from app.models.building import Building
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.security import password_hash
+from app.security import password_hash, create_access_token
+from app.security import get_current_user
 
 router = APIRouter()
 
@@ -22,17 +23,28 @@ def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
 
   return db_user
 
-@router.post("/login", response_model=UserSchema)
+@router.post("/login", response_model=UserToken)
 def login(user: UserLogin, db: Session = Depends(get_db)):
   db_user = db.query(User).filter(User.email == user.email).first()
 
   if not db_user:
-    raise HTTPException(satus_code=401, detail="Invalid email or password")
+    raise HTTPException(status_code=401, detail="Invalid email or password")
 
   if not password_hash.verify(user.password, db_user.password_hash):
     raise HTTPException(status_code=401, detail="Invalid email or password")
 
-  return db_user
+  data = {
+    "sub": str(db_user.id)
+  }
+
+  token = create_access_token(data)
+
+  user_token = {
+    "access_token": token,
+    "token_type": "bearer"
+  }
+
+  return user_token
 
 @router.post("/users", response_model=UserSchema)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -82,3 +94,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
   
   db.delete(db_user)
   db.commit()
+
+@router.get("/test-auth", response_model=UserSchema)
+def test_auth(current_user = Depends(get_current_user)):
+  return current_user
