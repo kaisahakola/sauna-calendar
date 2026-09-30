@@ -7,6 +7,7 @@ from app.models.sauna import Sauna
 from sqlalchemy.orm import Session
 from app.database import get_db
 from datetime import timedelta
+from app.security import get_current_user
 
 router = APIRouter()
 
@@ -24,7 +25,7 @@ def get_booking_by_id(booking_id: int, db: Session = Depends(get_db)):
   return db_booking
 
 @router.post("/bookings", response_model=BookingSchema)
-def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
+def create_booking(booking: BookingCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
   building = db.get(Building, booking.building_id)
   if not building:
     raise HTTPException(status_code=404, detail="Building not found")
@@ -35,6 +36,8 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
   
   if sauna.building_id != booking.building_id:
     raise HTTPException(status_code=404, detail="Sauna does not exist in the selected building")
+
+  user_id = current_user.id
 
   end_time = booking.start_time + timedelta(minutes=building.duration_minutes)
   
@@ -48,7 +51,7 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
     raise HTTPException(status_code=400, detail="Sauna already booked for this time")
   
   overlapping_user_booking = db.query(Booking).filter(
-    Booking.user_id == booking.user_id,
+    Booking.user_id == user_id,
     Booking.start_time < end_time,
     end_time > booking.start_time
   ).first()
@@ -62,7 +65,7 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
     status = "confirmed",
     building_id = booking.building_id,
     sauna_id = booking.sauna_id,
-    user_id = booking.user_id
+    user_id = user_id
   )
   db.add(db_booking)
   db.commit()

@@ -21,7 +21,11 @@ def create_access_token(data: dict):
   return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-  token_payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+  try:
+    token_payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+  except jwt.DecodeError:
+    raise HTTPException(status_code=401, detail="Not authenticated")
+  
   user_id = token_payload["sub"]
 
   db_user = db.get(User, user_id)

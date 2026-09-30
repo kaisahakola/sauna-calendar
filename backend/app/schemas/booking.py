@@ -20,7 +20,6 @@ class BookingCreate(BaseModel):
   start_time: datetime
   building_id: int
   sauna_id: int
-  user_id: int
 
 class BookingRead(BaseModel):
   id: int
