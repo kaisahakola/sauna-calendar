@@ -1,6 +1,7 @@
 import pytest
 from app.models.user import User
 from app.models.building import Building
+from app.security import password_hash
 
 @pytest.fixture
 def building(db):
@@ -16,7 +17,8 @@ def building(db):
 #
 
 def test_get_users(db, client, building):
-  user = User(name="Maija Mehiläinen", email="maija.mehilainen@email.com", building_id=building.id)
+  password = password_hash.hash("testpassword")
+  user = User(name="Maija Mehiläinen", email="maija.mehilainen@email.com", building_id=building.id, password_hash=password)
   db.add(user)
   db.commit()
 
@@ -31,7 +33,8 @@ def test_get_user_by_id(db, client, building):
     json={
       "name": "Kaija Koo",
       "email": "kaijakoo@email.com",
-      "building_id": building.id
+      "building_id": building.id,
+      "password": "testpassword"
     }
   )
 
@@ -57,7 +60,8 @@ def test_create_user(db, client, building):
     json={
       "name": "Keijo Kekäläinen",
       "email": "keijokek85@hotmail.com",
-      "building_id": building.id
+      "building_id": building.id,
+      "password": "testpassword"
     }
   )
 
@@ -72,7 +76,8 @@ def test_create_user_building_not_found(db, client):
     json={
       "name": "Kaisa Kak",
       "email": "kakkak@email.com",
-      "building_id": 8888888888
+      "building_id": 8888888888,
+      "password": "testpassword"
     }
   )
 
@@ -84,7 +89,8 @@ def test_duplicate_user_email(db, client, building):
     json={
       "name": "Jaana Jokunen",
       "email": "jaana111@email.com",
-      "building_id": building.id
+      "building_id": building.id,
+      "password": "testpassword"
     }
   )
 
@@ -93,7 +99,8 @@ def test_duplicate_user_email(db, client, building):
     json={
       "name": "Jaana Jokunen",
       "email": "jaana111@email.com",
-      "building_id": user1.json()["building"]["id"]
+      "building_id": user1.json()["building"]["id"],
+      "password": "testpassword"
     }
   )
 
@@ -109,7 +116,8 @@ def test_update_user(db, client, building):
     json={
       "name": "Keijo Kekäläinen",
       "email": "keijokek85@hotmail.com",
-      "building_id": building.id
+      "building_id": building.id,
+      "password": "testpassword"
     }
   )
 
@@ -120,7 +128,8 @@ def test_update_user(db, client, building):
     json={
       "name": "Kaija Kekäläinen",
       "email": "korkkaritkattoon@gmail.com",
-      "building_id": building.id
+      "building_id": building.id,
+      "password": "testpassword"
     }
   )
 
@@ -134,7 +143,8 @@ def test_update_user_not_foun(db, client, building):
     json={
       "name": "Kaija Kekäläinen",
       "email": "korkkaritkattoon@gmail.com",
-      "building_id": building.id
+      "building_id": building.id,
+      "password": "testpassword"
     }
   )
 
@@ -146,7 +156,8 @@ def test_update_user_building_not_foun(db, client, building):
       json={
         "name": "Keijo Kekäläinen",
         "email": "keijokek85@hotmail.com",
-        "building_id": building.id
+        "building_id": building.id,
+      "password": "testpassword"
       }
     )
   
@@ -157,7 +168,8 @@ def test_update_user_building_not_foun(db, client, building):
     json={
       "name": "Kaija Kekäläinen",
       "email": "korkkaritkattoon@gmail.com",
-      "building_id": 78667432786423
+      "building_id": 78667432786423,
+      "password": "testpassword"
     }
   )
 
@@ -173,7 +185,8 @@ def test_delete_user_by_id(db, client, building):
     json={
       "name": "Ella Mozzarella",
       "email": "ella01@email.com",
-      "building_id": building.id
+      "building_id": building.id,
+      "password": "testpassword"
     }
   )
 
