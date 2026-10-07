@@ -73,7 +73,7 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db), curren
   return db_booking
 
 @router.put("/bookings/{booking_id}", response_model=BookingSchema)
-def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depends(get_db)):
+def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
   db_booking = db.get(Booking, booking_id)
   if not db_booking:
     raise HTTPException(status_code=404, detail="Booking not found")
@@ -89,6 +89,7 @@ def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depend
   if sauna.building_id != booking.building_id:
     raise HTTPException(status_code=404, detail="Sauna does not exist in the selected building")
 
+  user_id = current_user.id
   end_time = booking.start_time + timedelta(minutes=building.duration_minutes)
   
   overlapping_sauna_booking = db.query(Booking).filter(
@@ -102,7 +103,7 @@ def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depend
     raise HTTPException(status_code=400, detail="Sauna already booked for this time")
   
   overlapping_user_booking = db.query(Booking).filter(
-    Booking.user_id == booking.user_id,
+    Booking.user_id == user_id,
     Booking.start_time < end_time,
     end_time > booking.start_time,
     Booking.id != booking_id
@@ -116,7 +117,7 @@ def update_booking(booking_id: int, booking: BookingCreate, db: Session = Depend
   db_booking.status = "confirmed"
   db_booking.building_id = booking.building_id
   db_booking.sauna_id = booking.sauna_id
-  db_booking.user_id = booking.user_id
+  db_booking.user_id = user_id
 
   db.commit()
   db.refresh(db_booking)
